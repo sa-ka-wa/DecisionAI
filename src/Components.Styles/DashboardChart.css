@@ -1,0 +1,99 @@
+.dashboard-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 32px; /* space-y-8 equivalent */
+}
+
+/* Chart sections */
+.chart-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Section title */
+.chart-container h2 {
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 700; /* font-bold */
+  color: #1f2937; /* text-gray-800 */
+  margin-bottom: 24px; /* mb-6 */
+}
+
+/* Chart height wrapper */
+.chart-wrapper {
+  height: 320px; /* h-80 */
+}
+
+/* Glass card for tooltips */
+.tooltip-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Tooltip text styles */
+.tooltip-card p {
+  margin: 4px 0;
+}
+
+.tooltip-title {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.tooltip-label {
+  font-weight: 700;
+}
+
+.tooltip-impact {
+  color: #2563eb; /* blue-600 */
+}
+
+.tooltip-priority {
+  color: #7c3aed; /* purple-600 */
+}
+
+.tooltip-category {
+  color: #6b7280; /* gray-500 */
+}
+
+/* Category summary grid */
+.category-grid {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .category-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .category-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Category item */
+.category-item {
+  text-align: center;
+}
+
+.category-count {
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.category-name {
+  font-size: 0.875rem; /* text-sm */
+  color: #4b5563; /* text-gray-600 */
+}

@@ -1,0 +1,155 @@
+/* Task card base */
+.task-card {
+  background: #ffffffcc;
+  backdrop-filter: blur(6px);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid #e5e7eb;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Priority-based card colors */
+.task-card-critical {
+  border-left: 4px solid #dc2626;
+}
+.task-card-urgent {
+  border-left: 4px solid #f97316;
+}
+.task-card-high {
+  border-left: 4px solid #facc15;
+}
+.task-card-medium {
+  border-left: 4px solid #3b82f6;
+}
+.task-card-low {
+  border-left: 4px solid #10b981;
+}
+
+/* Status badges */
+.status-badge {
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-completed {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+.status-in-progress {
+  background-color: #fef3c7;
+  color: #78350f;
+}
+.status-pending {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+/* Category tags */
+.category-tag {
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.category-design {
+  background-color: #8b5cf6;
+}
+.category-engineering {
+  background-color: #3b82f6;
+}
+.category-marketing {
+  background-color: #f97316;
+}
+.category-finance {
+  background-color: #10b981;
+}
+.category-research {
+  background-color: #facc15;
+}
+.category-operations {
+  background-color: #6b7280;
+}
+
+/* Priority badges */
+.priority-badge {
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Buttons */
+button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button.edit-btn {
+  background-color: #eff6ff;
+  color: #2563eb;
+  border-color: #bfdbfe;
+}
+
+button.delete-btn {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+/* Progress bar */
+.progress-bar {
+  height: 8px;
+  background-color: #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 8px;
+  background: linear-gradient(to right, #3b82f6, #7c3aed);
+  transition: width 0.3s ease;
+}
+
+/* Impact colors */
+.text-red-600 {
+  color: #dc2626;
+  font-weight: 600;
+}
+.text-yellow-600 {
+  color: #d97706;
+  font-weight: 600;
+}
+.text-green-600 {
+  color: #16a34a;
+  font-weight: 600;
+}
