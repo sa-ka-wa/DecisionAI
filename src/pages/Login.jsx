@@ -71,8 +71,8 @@ const Login = () => {
   // Demo account for easy testing
   const handleDemoLogin = () => {
     setFormData({
-      email: "demo@example.com",
-      password: "demo123",
+      email: "test2@example.com",
+      password: "password123",
     });
   };
 

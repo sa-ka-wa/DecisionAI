@@ -1,99 +1,193 @@
+/* DashboardChart.css - Futuristic Neural Charts */
 .dashboard-chart {
-  display: flex;
-  flex-direction: column;
-  gap: 32px; /* space-y-8 equivalent */
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 25px;
+  margin-bottom: 30px;
 }
 
-/* Chart sections */
 .chart-container {
-  background-color: #ffffff;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: rgba(20, 20, 30, 0.8);
+  border: 1px solid rgba(0, 243, 255, 0.3);
+  border-radius: 15px;
+  padding: 25px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Section title */
+.chart-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 243, 255, 0.15);
+  border-color: #00f3ff;
+}
+
+.chart-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #00f3ff, #b967ff);
+}
+
 .chart-container h2 {
-  font-size: 1.25rem; /* text-xl */
-  font-weight: 700; /* font-bold */
-  color: #1f2937; /* text-gray-800 */
-  margin-bottom: 24px; /* mb-6 */
+  color: #00f3ff;
+  font-size: 1.3rem;
+  margin: 0 0 20px 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-/* Chart height wrapper */
 .chart-wrapper {
-  height: 320px; /* h-80 */
+  height: 300px;
+  margin-bottom: 20px;
 }
 
-/* Glass card for tooltips */
+/* Bar Chart Styling */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: rgba(255, 255, 255, 0.1);
+}
+
+.recharts-x-axis .recharts-cartesian-axis-line,
+.recharts-y-axis .recharts-cartesian-axis-line {
+  stroke: rgba(255, 255, 255, 0.3);
+}
+
+.recharts-text {
+  fill: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.recharts-legend-item-text {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-size: 12px;
+}
+
+/* Tooltip Styling */
 .tooltip-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-  padding: 16px;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-}
-
-/* Tooltip text styles */
-.tooltip-card p {
-  margin: 4px 0;
+  background: linear-gradient(
+    135deg,
+    rgba(20, 20, 30, 0.95),
+    rgba(40, 40, 60, 0.95)
+  );
+  border: 1px solid rgba(0, 243, 255, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
 .tooltip-title {
+  color: #00f3ff;
   font-weight: 600;
-  color: #1f2937;
+  font-size: 0.9rem;
   margin-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+  padding-bottom: 4px;
+}
+
+.tooltip-impact,
+.tooltip-priority,
+.tooltip-category {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.8rem;
+  margin: 4px 0;
 }
 
 .tooltip-label {
-  font-weight: 700;
+  color: #00ff88;
+  font-weight: 600;
 }
 
-.tooltip-impact {
-  color: #2563eb; /* blue-600 */
+/* Pie Chart Styling */
+.recharts-pie-label {
+  fill: white !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
 }
 
-.tooltip-priority {
-  color: #7c3aed; /* purple-600 */
-}
-
-.tooltip-category {
-  color: #6b7280; /* gray-500 */
-}
-
-/* Category summary grid */
+/* Category Grid */
 .category-grid {
-  margin-top: 24px;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  margin-top: 20px;
 }
 
-@media (min-width: 768px) {
-  .category-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .category-grid {
-    grid-template-columns: repeat(6, 1fr);
-  }
-}
-
-/* Category item */
 .category-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px;
   text-align: center;
+  transition: all 0.3s ease;
+}
+
+.category-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
 }
 
 .category-count {
-  font-size: 1.125rem; /* text-lg */
-  font-weight: 700;
-  color: #1f2937;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #00f3ff;
+  margin-bottom: 4px;
 }
 
 .category-name {
-  font-size: 0.875rem; /* text-sm */
-  color: #4b5563; /* text-gray-600 */
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Custom gradients for bars */
+.neural-bar-gradient {
+  stop-color: #00f3ff;
+}
+
+.neural-bar-gradient-2 {
+  stop-color: #b967ff;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .dashboard-chart {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-wrapper {
+    height: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .chart-container h2 {
+    font-size: 1.1rem;
+  }
+
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Animation for chart containers */
+@keyframes chart-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
+  }
+}
+
+.chart-container {
+  animation: chart-glow 3s infinite alternate;
 }
