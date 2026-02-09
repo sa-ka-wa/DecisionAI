@@ -76,9 +76,9 @@
     var(--neon-purple),
     var(--neon-pink)
   );
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
   margin: 0 0 10px 0;
   font-weight: 800;
   letter-spacing: -0.5px;
@@ -670,4 +670,1307 @@
 
 .pulse {
   animation: pulse 2s infinite;
+}
+/* Add these styles to your Dashboard.css */
+
+/* Chart Container */
+.chart-container {
+  background: rgba(20, 20, 30, 0.8);
+  border: 1px solid rgba(0, 243, 255, 0.3);
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 30px;
+}
+
+.chart-container h2 {
+  margin: 0 0 25px 0;
+  font-size: 1.5rem;
+  background: linear-gradient(45deg, #00f3ff, #b967ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* DashboardChart specific styles */
+.dashboard-chart {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+}
+
+.chart-wrapper {
+  height: 350px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tooltip-card {
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(0, 243, 255, 0.3);
+  border-radius: 8px;
+  padding: 15px;
+  backdrop-filter: blur(10px);
+}
+
+.tooltip-title {
+  font-weight: bold;
+  color: #00f3ff;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.tooltip-impact,
+.tooltip-priority,
+.tooltip-category {
+  color: rgba(255, 255, 255, 0.8);
+  margin: 5px 0;
+  font-size: 0.9rem;
+}
+
+.tooltip-label {
+  color: #00ff88;
+  font-weight: bold;
+}
+
+/* Category Grid */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.category-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.category-item:hover {
+  transform: translateY(-5px);
+  border-color: rgba(0, 243, 255, 0.3);
+  box-shadow: 0 10px 20px rgba(0, 243, 255, 0.1);
+}
+
+.category-count {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #00f3ff;
+  margin-bottom: 5px;
+}
+
+.category-name {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+/* Recharts Customization */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: rgba(255, 255, 255, 0.1);
+}
+
+.recharts-text {
+  fill: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+}
+
+.recharts-legend-item-text {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.recharts-tooltip-cursor {
+  fill: rgba(0, 243, 255, 0.1);
+}
+
+.recharts-default-tooltip {
+  background-color: rgba(0, 0, 0, 0.9) !important;
+  border: 1px solid rgba(0, 243, 255, 0.3) !important;
+  border-radius: 8px !important;
+}
+
+/* Gamification Section Styles (already added but ensure they work) */
+.gamification-section {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 243, 255, 0.05),
+    rgba(185, 103, 255, 0.05)
+  );
+  border: 1px solid rgba(0, 243, 255, 0.2);
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 30px;
+}
+
+.quest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.quest-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.quest-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--neon-cyan);
+  box-shadow: 0 10px 20px rgba(0, 243, 255, 0.1);
+}
+
+.quest-icon {
+  font-size: 2rem;
+  background: rgba(0, 243, 255, 0.1);
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quest-content {
+  flex: 1;
+}
+
+.quest-title {
+  font-weight: 600;
+  color: white;
+  margin-bottom: 5px;
+}
+
+.quest-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: linear-gradient(45deg, #00f3ff, #b967ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+
+.quest-desc {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.quest-progress {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #00f3ff, #b967ff);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.quest-reward {
+  color: #00ff88;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.quest-status {
+  color: #00f3ff;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .quest-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-wrapper {
+    height: 300px;
+  }
+
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+/* ===================================
+   🧠 PRODUCTIVITY DNA & GAMIFICATION
+   =================================== */
+
+/* 🧠 Productivity DNA Section */
+.ai-personalization {
+  background: linear-gradient(
+    135deg,
+    rgba(185, 103, 255, 0.05),
+    rgba(255, 0, 255, 0.05)
+  );
+  border: 1px solid rgba(185, 103, 255, 0.2);
+  border-radius: 15px;
+  padding: 25px;
+  margin: 30px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-personalization::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    rgba(185, 103, 255, 0.1) 0%,
+    transparent 70%
+  );
+  animation: rotate 20s linear infinite reverse;
+}
+
+.ai-personalization h2 {
+  margin: 0 0 25px 0;
+  font-size: 1.5rem;
+  background: linear-gradient(45deg, #b967ff, #ff00ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 1;
+}
+
+.dna-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.dna-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.dna-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(185, 103, 255, 0.3);
+  box-shadow: 0 10px 25px rgba(185, 103, 255, 0.15);
+}
+
+.dna-stat {
+  margin-bottom: 15px;
+}
+
+.dna-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.dna-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1.3;
+}
+
+.dna-tip {
+  font-size: 0.9rem;
+  color: #b967ff;
+  padding: 8px 12px;
+  background: rgba(185, 103, 255, 0.1);
+  border-radius: 8px;
+  border-left: 3px solid #b967ff;
+  margin-top: 10px;
+}
+
+/* 📊 Real-time Productivity Pulse */
+.pulse-section {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 243, 255, 0.05),
+    rgba(0, 255, 136, 0.05)
+  );
+  border: 1px solid rgba(0, 243, 255, 0.2);
+  border-radius: 15px;
+  padding: 25px;
+  margin: 30px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.pulse-section::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 243, 255, 0.1) 0%,
+    transparent 70%
+  );
+  animation: rotate 20s linear infinite;
+}
+
+.pulse-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  position: relative;
+  z-index: 1;
+}
+
+.pulse-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  background: linear-gradient(45deg, #00f3ff, #00ff88);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.pulse-status {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.pulse-visualization {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.pulse-graph {
+  height: 180px;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.pulse-bar {
+  flex: 1;
+  border-radius: 8px 8px 0 0;
+  min-height: 10px;
+  transition: all 0.5s ease;
+  animation: pulse-glow 2s infinite alternate;
+  position: relative;
+  overflow: hidden;
+}
+
+.pulse-bar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.2));
+}
+
+@keyframes pulse-glow {
+  0% {
+    opacity: 0.7;
+    transform: scaleY(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1.05);
+  }
+}
+
+.pulse-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.pulse-metric {
+  text-align: center;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.pulse-metric:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0, 243, 255, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 243, 255, 0.1);
+}
+
+.metric-label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.metric-value {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(45deg, #00f3ff, #b967ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+/* 🤖 AI Coach Section */
+.ai-coach-section {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 136, 0.05),
+    rgba(0, 243, 255, 0.05)
+  );
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  border-radius: 15px;
+  padding: 25px;
+  margin: 30px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-coach-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(0, 255, 136, 0.05) 50%,
+    transparent 100%
+  );
+  animation: shimmer 3s infinite;
+}
+
+.ai-coach-section h2 {
+  margin: 0 0 25px 0;
+  font-size: 1.5rem;
+  background: linear-gradient(45deg, #00ff88, #00f3ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 1;
+}
+
+.coach-message {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  position: relative;
+  z-index: 1;
+}
+
+.coach-avatar {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #00ff88, #00f3ff);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 10px 25px rgba(0, 255, 136, 0.3);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.coach-content {
+  flex: 1;
+}
+
+.coach-text {
+  font-size: 1.1rem;
+  color: white;
+  margin-bottom: 25px;
+  line-height: 1.6;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border-left: 4px solid #00ff88;
+  backdrop-filter: blur(10px);
+}
+
+.coach-actions {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.coach-btn {
+  background: linear-gradient(
+    45deg,
+    rgba(0, 243, 255, 0.1),
+    rgba(0, 255, 136, 0.1)
+  );
+  border: 1px solid rgba(0, 243, 255, 0.3);
+  color: var(--neon-cyan);
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  backdrop-filter: blur(10px);
+}
+
+.coach-btn:hover {
+  background: linear-gradient(
+    45deg,
+    rgba(0, 243, 255, 0.2),
+    rgba(0, 255, 136, 0.2)
+  );
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 243, 255, 0.2);
+}
+
+.coach-btn:active {
+  transform: translateY(0);
+}
+
+/* 🔮 Predictive Insights */
+.predictive-insights {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 0, 255, 0.05),
+    rgba(255, 170, 0, 0.05)
+  );
+  border: 1px solid rgba(255, 0, 255, 0.2);
+  border-radius: 15px;
+  padding: 25px;
+  margin: 30px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.predictive-insights h2 {
+  margin: 0 0 25px 0;
+  font-size: 1.5rem;
+  background: linear-gradient(45deg, #ff00ff, #ffaa00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 1;
+}
+
+.predictive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.predictive-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.predictive-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 0, 255, 0.3);
+  box-shadow: 0 10px 25px rgba(255, 0, 255, 0.15);
+}
+
+.predictive-icon {
+  font-size: 2.2rem;
+  background: rgba(255, 0, 255, 0.1);
+  width: 70px;
+  height: 70px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 0, 255, 0.3);
+}
+
+.predictive-content {
+  flex: 1;
+}
+
+.predictive-content h3 {
+  margin: 0 0 12px 0;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.predictive-content p {
+  margin: 0 0 20px 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.predictive-confidence {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.confidence-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.confidence-value {
+  color: #00ff88;
+  font-weight: 700;
+  font-size: 1.1rem;
+  background: rgba(0, 255, 136, 0.1);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+/* 🎪 Daily Surprise */
+.daily-surprise {
+  background: linear-gradient(
+    135deg,
+    rgba(185, 103, 255, 0.1),
+    rgba(255, 0, 255, 0.1)
+  );
+  border: 1px solid rgba(185, 103, 255, 0.3);
+  border-radius: 15px;
+  padding: 25px;
+  margin: 30px 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.daily-surprise h2 {
+  margin: 0 0 20px 0;
+  font-size: 1.8rem;
+  background: linear-gradient(45deg, #b967ff, #ff00ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 1;
+}
+
+.daily-surprise p {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 25px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+
+.surprise-progress {
+  max-width: 500px;
+  margin: 0 auto 25px;
+  position: relative;
+  z-index: 1;
+}
+
+.progress-container {
+  width: 100%;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.progress-container div {
+  height: 100%;
+  background: linear-gradient(90deg, #b967ff, #ff00ff);
+  border-radius: 10px;
+  transition: width 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-container div::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  animation: shimmer 2s infinite;
+}
+
+.daily-surprise .surprise-btn {
+  margin-top: 25px;
+  background: linear-gradient(45deg, #b967ff, #ff00ff);
+  border: none;
+  color: white;
+  padding: 15px 40px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 10px 25px rgba(185, 103, 255, 0.3);
+}
+
+.daily-surprise .surprise-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(185, 103, 255, 0.4);
+  background: linear-gradient(45deg, #ff00ff, #b967ff);
+}
+
+.daily-surprise .surprise-btn:active {
+  transform: translateY(-2px);
+}
+
+/* 🎮 Quest Cards - Add this if not already present */
+.quest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.quest-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.quest-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(0, 243, 255, 0.3);
+  box-shadow: 0 10px 25px rgba(0, 243, 255, 0.15);
+}
+
+.quest-icon {
+  font-size: 2rem;
+  background: rgba(0, 243, 255, 0.1);
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 243, 255, 0.3);
+}
+
+.quest-content {
+  flex: 1;
+}
+
+.quest-title {
+  font-weight: 600;
+  color: white;
+  margin-bottom: 5px;
+  font-size: 1.1rem;
+}
+
+.quest-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: linear-gradient(45deg, #00f3ff, #b967ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+  line-height: 1;
+}
+
+.quest-desc {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.quest-progress {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #00f3ff, #b967ff);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.quest-reward {
+  color: #00ff88;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.quest-status {
+  color: #00f3ff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+/* Animations */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dna-grid,
+  .predictive-grid,
+  .quest-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pulse-visualization {
+    grid-template-columns: 1fr;
+  }
+
+  .pulse-graph {
+    height: 150px;
+  }
+
+  .coach-message {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .coach-avatar {
+    align-self: center;
+  }
+
+  .coach-actions {
+    justify-content: center;
+  }
+
+  .daily-surprise h2 {
+    font-size: 1.5rem;
+  }
+
+  .metric-value {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pulse-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .coach-actions {
+    flex-direction: column;
+  }
+
+  .coach-btn {
+    width: 100%;
+  }
+
+  .predictive-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .predictive-icon {
+    align-self: center;
+  }
+}
+/* ===================================
+   TASK CARD FIXES
+   =================================== */
+
+/* Fix white-on-white task titles */
+.task-card-holographic h4 {
+  color: #ffffff !important; /* Force white text */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Add shadow for better readability */
+  margin: 0 0 8px 0 !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+}
+
+.task-card-holographic p {
+  color: rgba(
+    255,
+    255,
+    255,
+    0.8
+  ) !important; /* Brighter text for description */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  margin: 0 !important;
+  font-size: 0.9rem !important;
+  line-height: 1.4 !important;
+}
+
+/* Ensure task list container has proper background */
+.task-list-holographic {
+  background: rgba(20, 20, 30, 0.9) !important; /* Darker background */
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(0, 243, 255, 0.3) !important;
+  border-radius: 15px !important;
+  padding: 25px !important;
+}
+
+.task-list-holographic h2 {
+  color: #ffffff !important;
+  margin: 0 0 25px 0 !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+}
+
+/* Fix for task item cards */
+.task-card-holographic {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  padding: 20px !important;
+  margin-bottom: 15px !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.task-card-holographic:hover {
+  transform: translateX(5px) !important;
+  border-color: var(--neon-cyan) !important;
+  box-shadow: 0 5px 20px rgba(0, 243, 255, 0.15) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.task-card-holographic::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: 3px !important;
+  background: linear-gradient(
+    to bottom,
+    var(--neon-cyan),
+    var(--neon-purple)
+  ) !important;
+}
+
+/* Fix for task status badges */
+.task-card-holographic div[style*="background:"] {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Fix for category tags */
+.task-card-holographic div[style*="background: rgba(255,255,255,0.05)"] {
+  background: rgba(0, 243, 255, 0.1) !important;
+  color: var(--neon-cyan) !important;
+  border: 1px solid rgba(0, 243, 255, 0.3) !important;
+}
+
+/* Fix for priority indicators */
+.task-card-holographic div[style*="background: rgba(255, 85, 85"] {
+  background: rgba(255, 85, 85, 0.2) !important;
+  border: 1px solid rgba(255, 85, 85, 0.4) !important;
+}
+
+.task-card-holographic div[style*="background: rgba(255, 170, 0"] {
+  background: rgba(255, 170, 0, 0.2) !important;
+  border: 1px solid rgba(255, 170, 0, 0.4) !important;
+}
+
+.task-card-holographic div[style*="background: rgba(0, 243, 255"] {
+  background: rgba(0, 243, 255, 0.2) !important;
+  border: 1px solid rgba(0, 243, 255, 0.4) !important;
+}
+
+/* Fix for impact text */
+.task-card-holographic span[style*="color: #00ff88"] {
+  color: #00ff88 !important;
+  text-shadow: 0 1px 3px rgba(0, 255, 136, 0.3) !important;
+}
+
+/* Emergency override for all text in task cards */
+.task-card-holographic * {
+  color: inherit !important;
+}
+
+/* ===================================
+   DASHBOARD-WIDE TEXT FIXES
+   =================================== */
+
+/* Ensure all dashboard text is visible */
+.neural-dashboard {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.neural-dashboard h1,
+.neural-dashboard h2,
+.neural-dashboard h3,
+.neural-dashboard h4 {
+  color: #ffffff !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+.neural-dashboard p,
+.neural-dashboard span {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Fix KPI cards text */
+.kpi-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.kpi-title {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.kpi-value {
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(0, 243, 255, 0.5) !important;
+}
+
+/* Fix dashboard grid background */
+.dashboard-grid {
+  background: transparent !important;
+}
+
+/* Fix insight panels */
+.neural-insights-panel,
+.calendar-insights-panel {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.insight-title {
+  color: #ffffff !important;
+}
+
+.insight-desc {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Fix AI assistant text */
+.ai-assistant-dashboard {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.ai-message {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* ===================================
+   QUICK EMERGENCY FIXES
+   =================================== */
+
+/* If nothing works, try this nuclear option */
+* {
+  color: #ffffff !important;
+}
+
+/* But more specifically for your problem */
+div[class*="task"],
+div[class*="Task"],
+div[id*="task"],
+div[id*="Task"] {
+  color: #ffffff !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Fix specifically for your Home.js task cards */
+div[style*="gridColumn: span 8"] h4,
+div[style*="gridColumn: span 6"] h4 {
+  color: #ffffff !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* ===================================
+   DARK MODE ENFORCEMENT
+   =================================== */
+
+/* Force dark backgrounds */
+body {
+  background: linear-gradient(135deg, #0a0a0f 0%, #05050a 100%) !important;
+  color: #ffffff !important;
+}
+
+/* Force dark cards */
+div[class*="card"],
+div[class*="Card"],
+section[class*="card"],
+section[class*="Card"] {
+  background: rgba(20, 20, 30, 0.9) !important;
+  color: #ffffff !important;
+}
+
+/* Force dark containers */
+div[class*="container"],
+div[class*="Container"],
+section[class*="container"],
+section[class*="Container"] {
+  background: rgba(10, 10, 15, 0.9) !important;
+  color: #ffffff !important;
+}
+
+/* ===================================
+   SPECIFIC COMPONENT FIXES
+   =================================== */
+
+/* Fix for Recent Neural Tasks section specifically */
+div[style*="gridColumn: span 8"] {
+  background: rgba(20, 20, 30, 0.95) !important;
+  border: 1px solid rgba(0, 243, 255, 0.3) !important;
+  border-radius: 15px !important;
+  padding: 25px !important;
+}
+
+div[style*="gridColumn: span 8"] h2 {
+  color: #00f3ff !important;
+  font-size: 1.5rem !important;
+  margin-bottom: 25px !important;
+}
+
+/* Fix for Dashboard task summary */
+.task-summary-section {
+  background: rgba(20, 20, 30, 0.95) !important;
+  border: 1px solid rgba(0, 243, 255, 0.3) !important;
+}
+
+/* Fix for AI Assistant */
+.ai-assistant-dashboard {
+  background: rgba(20, 20, 30, 0.95) !important;
+  border: 1px solid rgba(0, 243, 255, 0.3) !important;
+}
+
+/* Fix for Neural Insights */
+.neural-insights-panel {
+  background: rgba(20, 20, 30, 0.95) !important;
+  border: 1px solid rgba(0, 243, 255, 0.3) !important;
+}
+
+/* ===================================
+   TEXT CONTRAST ENHANCEMENT
+   =================================== */
+
+/* Add text shadows for better readability */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+}
+
+p,
+span,
+div {
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Specific for task titles */
+.task-title,
+[class*="task-title"],
+[class*="taskTitle"] {
+  text-shadow:
+    0 1px 0 #000,
+    0 2px 4px rgba(0, 0, 0, 0.7),
+    0 0 10px rgba(0, 243, 255, 0.3) !important;
 }

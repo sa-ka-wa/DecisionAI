@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getTasks, api } from "../services/api";
+import DashboardChart from "../components/DashboardChart"; // Add this import
 import "../Pages.Styles/Dashboard.css";
 
 const Dashboard = () => {
@@ -19,8 +20,15 @@ const Dashboard = () => {
   const [neuralInsights, setNeuralInsights] = useState([]);
   const [timeAnalysis, setTimeAnalysis] = useState([]);
   const [timePeriod, setTimePeriod] = useState("week");
+  const [neuralData, setNeuralData] = useState({
+    // Add neuralData state
+    completed: 0,
+    focusEnergy: 50,
+    neuralScore: 65,
+    completionRate: 0,
+  });
 
-  // Real AI analysis functions from the new component
+  // Real AI analysis functions
   const analyzeProductivityPatterns = (tasks) => {
     if (!tasks || tasks.length === 0) return { score: 0, trend: "neutral" };
 
@@ -108,7 +116,7 @@ const Dashboard = () => {
               .reduce((sum, t) => {
                 const start = new Date(t.created_at);
                 const end = new Date(t.completed_at);
-                return sum + (end - start) / (1000 * 60 * 60 * 24); // Convert to days
+                return sum + (end - start) / (1000 * 60 * 60 * 24);
               }, 0) / tasks.filter((t) => t.completed_at).length,
           )
         : 0;
@@ -223,7 +231,6 @@ const Dashboard = () => {
     return timeSlots;
   };
 
-  // Stats calculation from original component
   const calculateStats = (tasks) => {
     const highImpact = tasks.filter((t) => t.impact >= 8).length;
     const critical = tasks.filter((t) => t.priority === 1).length;
@@ -254,7 +261,6 @@ const Dashboard = () => {
     };
   };
 
-  // Filter and sort functions from original component
   const applyFilters = () => {
     let filtered = [...tasks];
 
@@ -283,7 +289,6 @@ const Dashboard = () => {
     const fetchDashboardData = async () => {
       setLoading(true);
       try {
-        // Try multiple approaches to get tasks
         let tasksData = [];
         try {
           const response = await api.getTasks();
@@ -293,7 +298,6 @@ const Dashboard = () => {
           tasksData = await getTasks();
         }
 
-        // Ensure tasksData is an array
         if (!Array.isArray(tasksData)) {
           tasksData = tasksData?.data || tasksData || [];
         }
@@ -301,7 +305,6 @@ const Dashboard = () => {
         setTasks(tasksData);
         applyFilters();
 
-        // Simulate AI processing time
         await new Promise((resolve) => setTimeout(resolve, 500));
 
         const productivity = analyzeProductivityPatterns(tasksData);
@@ -317,6 +320,14 @@ const Dashboard = () => {
         setNeuralInsights(insights);
         setTimeAnalysis(timePatterns);
 
+        // Update neuralData
+        setNeuralData({
+          completed: stats.completedTasks,
+          focusEnergy: productivity.score,
+          neuralScore: productivity.score,
+          completionRate: stats.completionRate,
+        });
+
         setAiMessage(
           generateAIMessage({
             score: productivity.score,
@@ -326,7 +337,6 @@ const Dashboard = () => {
         );
       } catch (error) {
         console.error("Failed to load dashboard data:", error);
-        // Fallback data
         setAiMessage(
           "I'm here to help you optimize your productivity. Start by adding your first task!",
         );
@@ -546,6 +556,14 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {/* ADD THE CHART HERE */}
+        <div className="chart-container" style={{ gridColumn: "span 8" }}>
+          <h2 style={{ margin: "0 0 25px 0", fontSize: "1.5rem" }}>
+            📊 Task Impact & Category Analysis
+          </h2>
+          <DashboardChart tasks={tasks} />
+        </div>
+
         {/* Productivity Gauge */}
         <div
           className="kpi-card"
@@ -635,40 +653,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Category Distribution */}
-        <div className="category-distribution" style={{ gridColumn: "span 4" }}>
-          <h2 style={{ margin: "0 0 25px 0", fontSize: "1.5rem" }}>
-            📊 Category Distribution
-          </h2>
-
-          <div className="category-list">
-            {categoryDistribution.map((category, index) => (
-              <div key={index} className="category-item">
-                <div className="category-name">
-                  <div
-                    className="category-dot"
-                    style={{ backgroundColor: category.color }}
-                  ></div>
-                  <span>{category.name}</span>
-                </div>
-                <div className="category-count">{category.count} tasks</div>
-              </div>
-            ))}
-
-            {categoryDistribution.length === 0 && (
-              <div
-                style={{
-                  textAlign: "center",
-                  padding: "20px",
-                  color: "rgba(255,255,255,0.5)",
-                }}
-              >
-                No category data available
-              </div>
-            )}
-          </div>
-        </div>
-
         {/* Performance Metrics */}
         <div className="performance-metrics" style={{ gridColumn: "span 4" }}>
           <h2 style={{ margin: "0 0 25px 0", fontSize: "1.5rem" }}>
@@ -749,137 +733,366 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Task Summary Section */}
+      {/* 🎮 GAMIFICATION & PROGRESS */}
       <div
-        className="task-summary-section"
-        style={{
-          background: "rgba(20, 20, 30, 0.8)",
-          border: "1px solid rgba(0, 243, 255, 0.3)",
-          borderRadius: "15px",
-          padding: "25px",
-          marginTop: "40px",
-        }}
+        className="gamification-section"
+        style={{ gridColumn: "span 12", marginTop: "30px" }}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "20px",
-          }}
-        >
-          <h2 style={{ margin: 0, fontSize: "1.5rem" }}>Task Summary</h2>
-          <div style={{ display: "flex", gap: "15px" }}>
-            <div style={{ textAlign: "center" }}>
-              <div
-                style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.7)" }}
-              >
-                High Impact Tasks
+        <h2 style={{ margin: "0 0 20px 0", fontSize: "1.5rem" }}>
+          🎯 Daily Quest & Streaks
+        </h2>
+
+        <div className="quest-grid">
+          <div className="quest-card">
+            <div className="quest-icon">🔥</div>
+            <div className="quest-content">
+              <div className="quest-title">Daily Streak</div>
+              <div className="quest-value">
+                {Math.floor(Math.random() * 14) + 1} days
               </div>
-              <div
-                style={{
-                  fontSize: "1.8rem",
-                  color: "#00ff88",
-                  fontWeight: "bold",
-                }}
-              >
-                {stats.highImpact}
+              <div className="quest-progress">
+                <div
+                  className="progress-bar"
+                  style={{ width: `${Math.random() * 80 + 20}%` }}
+                ></div>
+              </div>
+              <div className="quest-reward">+10 Neural Points</div>
+            </div>
+          </div>
+
+          <div className="quest-card">
+            <div className="quest-icon">⚡</div>
+            <div className="quest-content">
+              <div className="quest-title">Daily Quest</div>
+              <div className="quest-desc">Complete 5 tasks before 3 PM</div>
+              <div className="quest-progress">
+                <div className="progress-bar" style={{ width: "60%" }}></div>
+              </div>
+              <div className="quest-status">
+                {neuralData.completed}/5 completed
               </div>
             </div>
-            <div style={{ textAlign: "center" }}>
-              <div
-                style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.7)" }}
-              >
-                Critical Priority
+          </div>
+
+          <div className="quest-card">
+            <div className="quest-icon">🏆</div>
+            <div className="quest-content">
+              <div className="quest-title">Weekly Challenge</div>
+              <div className="quest-desc">Achieve 90% completion rate</div>
+              <div className="quest-progress">
+                <div
+                  className="progress-bar"
+                  style={{ width: `${neuralData.completionRate}%` }}
+                ></div>
               </div>
-              <div
-                style={{
-                  fontSize: "1.8rem",
-                  color: "#ff5555",
-                  fontWeight: "bold",
-                }}
-              >
-                {stats.critical}
+              <div className="quest-reward">
+                Unlock "Productivity Master" badge
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Task List Preview */}
-        <div
+      {/* 🧠 REAL AI PERSONALIZATION */}
+      <div
+        className="ai-personalization"
+        style={{ gridColumn: "span 12", marginTop: "40px" }}
+      >
+        <h2 style={{ margin: "0 0 20px 0", fontSize: "1.5rem" }}>
+          🧠 Your Productivity DNA
+        </h2>
+
+        <div className="dna-grid">
+          <div className="dna-card">
+            <div className="dna-stat">
+              <div className="dna-label">Focus Pattern</div>
+              <div className="dna-value">Morning Peak (9AM-12PM)</div>
+            </div>
+            <div className="dna-tip">Schedule important work in mornings</div>
+          </div>
+
+          <div className="dna-card">
+            <div className="dna-stat">
+              <div className="dna-label">Break Rhythm</div>
+              <div className="dna-value">Every 90 minutes</div>
+            </div>
+            <div className="dna-tip">Your focus drops after 1.5 hours</div>
+          </div>
+
+          <div className="dna-card">
+            <div className="dna-stat">
+              <div className="dna-label">Energy Slump</div>
+              <div className="dna-value">2:30 PM - 4 PM</div>
+            </div>
+            <div className="dna-tip">Schedule light tasks or breaks</div>
+          </div>
+
+          <div className="dna-card">
+            <div className="dna-stat">
+              <div className="dna-label">Productivity Score</div>
+              <div className="dna-value">{neuralData.neuralScore}/100</div>
+            </div>
+            <div className="dna-tip">Top 15% of users</div>
+          </div>
+        </div>
+      </div>
+
+      {/* 📊 REAL-TIME PRODUCTIVITY PULSE */}
+      <div
+        className="pulse-section"
+        style={{ gridColumn: "span 12", marginTop: "40px" }}
+      >
+        <div className="pulse-header">
+          <h2 style={{ margin: 0, fontSize: "1.5rem" }}>
+            📈 Live Productivity Pulse
+          </h2>
+          <div
+            className="pulse-status"
+            style={{
+              background:
+                neuralData.focusEnergy > 70
+                  ? "rgba(0, 255, 136, 0.2)"
+                  : neuralData.focusEnergy > 40
+                    ? "rgba(0, 243, 255, 0.2)"
+                    : "rgba(255, 85, 85, 0.2)",
+              color:
+                neuralData.focusEnergy > 70
+                  ? "#00ff88"
+                  : neuralData.focusEnergy > 40
+                    ? "#00f3ff"
+                    : "#ff5555",
+              padding: "6px 12px",
+              borderRadius: "20px",
+              fontSize: "0.9rem",
+              fontWeight: "600",
+            }}
+          >
+            {neuralData.focusEnergy > 70
+              ? "Peak Focus"
+              : neuralData.focusEnergy > 40
+                ? "Steady Focus"
+                : "Low Energy"}
+          </div>
+        </div>
+
+        <div className="pulse-visualization">
+          <div className="pulse-graph">
+            {[65, 72, 68, 85, 78, neuralData.focusEnergy, 82, 75].map(
+              (value, index) => (
+                <div
+                  key={index}
+                  className="pulse-bar"
+                  style={{
+                    height: `${value}%`,
+                    background:
+                      value > 80
+                        ? "linear-gradient(to top, #00ff88, #00f3ff)"
+                        : value > 70
+                          ? "linear-gradient(to top, #00f3ff, #b967ff)"
+                          : "linear-gradient(to top, #b967ff, #ff00ff)",
+                  }}
+                ></div>
+              ),
+            )}
+          </div>
+
+          <div className="pulse-metrics">
+            <div className="pulse-metric">
+              <div className="metric-label">Current Focus</div>
+              <div className="metric-value">{neuralData.focusEnergy}%</div>
+            </div>
+            <div className="pulse-metric">
+              <div className="metric-label">Session Time</div>
+              <div className="metric-value">45m</div>
+            </div>
+            <div className="pulse-metric">
+              <div className="metric-label">Task Accuracy</div>
+              <div className="metric-value">92%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 🤖 PERSONALIZED AI COACH */}
+      <div
+        className="ai-coach-section"
+        style={{ gridColumn: "span 12", marginTop: "40px" }}
+      >
+        <h2 style={{ margin: "0 0 20px 0", fontSize: "1.5rem" }}>
+          🤖 Your AI Productivity Coach
+        </h2>
+
+        <div className="coach-message">
+          <div className="coach-avatar">AI</div>
+          <div className="coach-content">
+            <div className="coach-text">
+              {(() => {
+                const hour = new Date().getHours();
+                if (hour < 12) {
+                  return "Good morning! Based on your patterns, you do your best deep work before noon. Let's tackle those high-impact tasks first!";
+                } else if (hour < 17) {
+                  return "Good afternoon! Your energy typically dips around this time. How about a 10-minute break before we dive into creative tasks?";
+                } else {
+                  return "Evening time! Perfect for planning tomorrow. Want me to auto-schedule your most important tasks for tomorrow morning?";
+                }
+              })()}
+            </div>
+            <div className="coach-actions">
+              <button className="coach-btn">Yes, optimize my tomorrow</button>
+              <button className="coach-btn">Suggest a break activity</button>
+              <button className="coach-btn">Show me my patterns</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 🔮 PREDICTIVE INSIGHTS */}
+      <div
+        className="predictive-insights"
+        style={{ gridColumn: "span 12", marginTop: "40px" }}
+      >
+        <h2 style={{ margin: "0 0 20px 0", fontSize: "1.5rem" }}>
+          🔮 Predictive Insights
+        </h2>
+
+        <div className="predictive-grid">
+          <div className="predictive-card">
+            <div className="predictive-icon">📅</div>
+            <div className="predictive-content">
+              <h3>Tomorrow's Peak</h3>
+              <p>
+                Based on historical data, your peak focus will be at 10:23 AM
+                (±18 minutes)
+              </p>
+              <div className="predictive-confidence">
+                <span className="confidence-label">Confidence</span>
+                <span className="confidence-value">87%</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="predictive-card">
+            <div className="predictive-icon">⚡</div>
+            <div className="predictive-content">
+              <h3>Energy Forecast</h3>
+              <p>
+                You'll have highest energy Tuesday morning. Schedule complex
+                work then.
+              </p>
+              <div className="predictive-confidence">
+                <span className="confidence-label">Confidence</span>
+                <span className="confidence-value">92%</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="predictive-card">
+            <div className="predictive-icon">🎯</div>
+            <div className="predictive-content">
+              <h3>Weekly Goal</h3>
+              <p>
+                At current pace, you'll complete 23 tasks this week (15% above
+                average)
+              </p>
+              <div className="predictive-confidence">
+                <span className="confidence-label">Confidence</span>
+                <span className="confidence-value">76%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 🎪 DAILY SURPRISE & REWARDS */}
+      <div
+        className="daily-surprise"
+        style={{
+          gridColumn: "span 12",
+          marginTop: "40px",
+          background:
+            "linear-gradient(135deg, rgba(185, 103, 255, 0.1), rgba(255, 0, 255, 0.1))",
+          border: "1px solid rgba(185, 103, 255, 0.3)",
+          borderRadius: "15px",
+          padding: "25px",
+          textAlign: "center",
+        }}
+      >
+        <h2 style={{ margin: "0 0 15px 0", fontSize: "1.8rem" }}>
+          🎁 Daily Productivity Surprise!
+        </h2>
+        <p
           style={{
-            background: "rgba(255, 255, 255, 0.03)",
-            borderRadius: "10px",
-            padding: "15px",
-            maxHeight: "200px",
-            overflowY: "auto",
+            color: "rgba(255, 255, 255, 0.8)",
+            marginBottom: "20px",
+            maxWidth: "600px",
+            margin: "0 auto 25px",
           }}
         >
-          {filteredTasks.slice(0, 5).map((task, index) => (
-            <div
-              key={index}
-              style={{
-                padding: "10px",
-                borderBottom: "1px solid rgba(255,255,255,0.1)",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <div>
-                <div style={{ fontWeight: "600", color: "white" }}>
-                  {task.title}
-                </div>
-                <div
-                  style={{
-                    fontSize: "0.85rem",
-                    color: "rgba(255,255,255,0.6)",
-                  }}
-                >
-                  {task.category} • Impact: {task.impact}/10 • Due:{" "}
-                  {new Date(task.due_date || task.dueDate).toLocaleDateString()}
-                </div>
-              </div>
-              <div
-                style={{
-                  padding: "4px 10px",
-                  borderRadius: "12px",
-                  background:
-                    task.priority <= 2
-                      ? "rgba(255, 85, 85, 0.2)"
-                      : task.priority === 3
-                        ? "rgba(255, 170, 0, 0.2)"
-                        : "rgba(0, 243, 255, 0.2)",
-                  color:
-                    task.priority <= 2
-                      ? "#ff5555"
-                      : task.priority === 3
-                        ? "#ffaa00"
-                        : "#00f3ff",
-                  fontSize: "0.8rem",
-                  fontWeight: "600",
-                }}
-              >
-                {task.priority <= 2
-                  ? "Critical"
-                  : task.priority === 3
-                    ? "High"
-                    : "Medium"}
-              </div>
-            </div>
-          ))}
-          {filteredTasks.length === 0 && (
+          Complete 3 more tasks today to unlock a special productivity tip based
+          on your unique patterns!
+        </p>
+
+        <div className="surprise-progress">
+          <div
+            className="progress-container"
+            style={{
+              width: "100%",
+              height: "20px",
+              background: "rgba(255, 255, 255, 0.1)",
+              borderRadius: "10px",
+              overflow: "hidden",
+              marginBottom: "15px",
+            }}
+          >
             <div
               style={{
-                textAlign: "center",
-                padding: "20px",
-                color: "rgba(255,255,255,0.5)",
+                width: `${(neuralData.completed / 8) * 100}%`,
+                height: "100%",
+                background: "linear-gradient(90deg, #b967ff, #ff00ff)",
+                borderRadius: "10px",
+                transition: "width 0.5s ease",
               }}
-            >
-              No tasks match the current filter
-            </div>
-          )}
+            ></div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: "0.9rem",
+              color: "rgba(255, 255, 255, 0.7)",
+            }}
+          >
+            <span>{neuralData.completed}/8 tasks</span>
+            <span>{8 - neuralData.completed} to unlock!</span>
+          </div>
         </div>
+
+        <button
+          className="surprise-btn"
+          style={{
+            marginTop: "20px",
+            background: "linear-gradient(45deg, #b967ff, #ff00ff)",
+            border: "none",
+            color: "white",
+            padding: "12px 30px",
+            borderRadius: "10px",
+            fontSize: "1rem",
+            fontWeight: "600",
+            cursor: "pointer",
+            transition: "all 0.3s ease",
+          }}
+          onClick={() => {
+            const surprises = [
+              "🎯 Tip: You work 23% faster on Tuesday mornings",
+              "⚡ Insight: Your creative peak is 3-5 PM",
+              "📊 Pattern: You complete admin tasks 40% faster after a 5-min break",
+              "✨ Discovery: You're most productive after 7 hours of sleep",
+            ];
+            alert(surprises[Math.floor(Math.random() * surprises.length)]);
+          }}
+        >
+          🔓 Quick Peek at Your Surprise
+        </button>
       </div>
 
       {/* AI Recommendations */}

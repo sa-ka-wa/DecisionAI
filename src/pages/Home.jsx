@@ -19,15 +19,26 @@ const Home = () => {
   });
 
   const [recentTasks, setRecentTasks] = useState([]);
+  const [aiSchedule, setAiSchedule] = useState([]);
+  const [calendarEvents, setCalendarEvents] = useState([]);
+  const [scheduleConflicts, setScheduleConflicts] = useState([]);
+  const [lifePatterns, setLifePatterns] = useState({
+    peakHours: [10, 12],
+    creativeHours: [15, 17],
+    lowEnergyHours: [14, 16],
+    focusDays: ["Monday", "Wednesday", "Friday"],
+  });
   const [aiInsights, setAiInsights] = useState(null);
   const [userMood, setUserMood] = useState("focused");
   const [aiVoice, setAiVoice] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [productivityTrend, setProductivityTrend] = useState("rising");
+  const [calendarConnected, setCalendarConnected] = useState(false);
 
-  // Real AI functionality - not just words
+  // Real AI functionality
   const detectUserMood = () => {
     const hour = new Date().getHours();
+    const day = new Date().getDay();
     const moods = {
       morning: ["focused", "energetic", "productive"],
       afternoon: ["focused", "balanced", "creative"],
@@ -36,17 +47,32 @@ const Home = () => {
 
     let timeOfDay = hour < 12 ? "morning" : hour < 18 ? "afternoon" : "evening";
     const moodOptions = moods[timeOfDay];
+
+    // Adjust based on calendar events
+    const hasMeetings = calendarEvents.some(
+      (event) =>
+        event.title?.toLowerCase().includes("meeting") ||
+        event.title?.toLowerCase().includes("call"),
+    );
+
+    if (hasMeetings && hour > 14) {
+      return "balanced"; // Meetings in afternoon require balance
+    }
+
     return moodOptions[Math.floor(Math.random() * moodOptions.length)];
   };
 
-  const generateAIVoice = (tasks, efficiency) => {
+  const generateAIVoice = (tasks, efficiency, calendarCount) => {
     const voiceTemplates = [
-      `I'm detecting ${tasks.filter((t) => t.priority <= 2).length} high-priority tasks. Let's optimize your workflow.`,
+      `I'm detecting ${tasks.filter((t) => t.priority <= 2).length} high-priority tasks and ${calendarCount} calendar events. Let's optimize your day.`,
       `Your neural efficiency is at ${efficiency}%. I suggest taking a 5-minute break to reset focus.`,
-      `Based on your work patterns, you're most productive between 10 AM - 12 PM. Schedule important tasks then.`,
-      `I've analyzed ${tasks.length} tasks and found you complete complex tasks 23% faster on Tuesdays.`,
-      `Your cognitive load is moderate. Try the Pomodoro technique: 25 minutes focus, 5 minutes rest.`,
-      `I'm noticing a pattern: you excel at creative tasks in the afternoon. Schedule brainstorming sessions then.`,
+      `Based on your patterns, you're most productive between ${lifePatterns.peakHours[0]} AM - ${lifePatterns.peakHours[1]} PM. Schedule important tasks then.`,
+      `I've analyzed ${tasks.length} tasks and found you complete creative tasks 23% faster in the afternoon.`,
+      `Your cognitive load is moderate. Calendar shows ${calendarCount} events today. Try the Pomodoro technique.`,
+      `I'm noticing a pattern: you excel at analytical tasks in the morning. Schedule brainstorming sessions in the afternoon.`,
+      calendarConnected
+        ? `Calendar integrated. ${scheduleConflicts.length > 0 ? `Found ${scheduleConflicts.length} conflicts to resolve.` : "No schedule conflicts detected."}`
+        : "Connect your calendar for adaptive scheduling.",
     ];
 
     return voiceTemplates[Math.floor(Math.random() * voiceTemplates.length)];
@@ -61,14 +87,169 @@ const Home = () => {
       ["Work", "Health", "Personal", "Learning"].includes(t.category),
     ).length;
 
+    // Factor in calendar alignment
+    const calendarAlignment =
+      calendarEvents.length > 0
+        ? Math.min(
+            30,
+            calendarEvents.filter(
+              (e) => e.type !== "break" && e.status !== "cancelled",
+            ).length * 5,
+          )
+        : 0;
+
     return Math.min(
       100,
       Math.round(
         (completed / tasks.length) * 40 +
           (highImpact / tasks.length) * 30 +
-          (balanced / 4) * 30,
+          (balanced / 4) * 20 +
+          calendarAlignment,
       ),
     );
+  };
+
+  const calculateFreeTime = (events) => {
+    if (!events || events.length === 0) return 6; // default free hours
+
+    const today = new Date().toDateString();
+    const todayEvents = events.filter(
+      (event) => new Date(event.start).toDateString() === today,
+    );
+
+    // Calculate total hours booked
+    const totalHours = todayEvents.reduce((sum, event) => {
+      const start = new Date(event.start);
+      const end = new Date(event.end);
+      const duration = (end - start) / (1000 * 60 * 60); // hours
+      return sum + duration;
+    }, 0);
+
+    return Math.max(0, 16 - totalHours); // Assume 16 waking hours
+  };
+
+  // Generate AI schedule based on tasks and calendar
+  const generateAISchedule = (tasks, events) => {
+    const schedule = [];
+    const now = new Date();
+    const currentHour = now.getHours();
+
+    // Morning block (9-12)
+    if (currentHour < 12) {
+      const morningTasks = tasks
+        .filter(
+          (t) =>
+            t.priority <= 2 && t.status !== "completed" && t.complexity >= 4,
+        )
+        .slice(0, 2);
+
+      if (morningTasks.length > 0) {
+        schedule.push({
+          time: "9:00-11:00",
+          type: "deep-work",
+          recommendation: `Focus on: ${morningTasks.map((t) => t.title).join(", ")}`,
+          energy: "peak",
+          icon: "🎯",
+        });
+      }
+    }
+
+    // Afternoon block (13-16)
+    if (currentHour < 16) {
+      const creativeTasks = tasks
+        .filter(
+          (t) => t.category === "Creative" || t.tags?.includes("creative"),
+        )
+        .slice(0, 1);
+
+      if (creativeTasks.length > 0) {
+        schedule.push({
+          time: "14:00-15:30",
+          type: "creative-work",
+          recommendation: `Creative session: ${creativeTasks[0].title}`,
+          energy: "creative",
+          icon: "✨",
+        });
+      }
+    }
+
+    // Evening planning (17-18)
+    schedule.push({
+      time: "17:00-18:00",
+      type: "planning",
+      recommendation: "Review tomorrow's schedule & plan priorities",
+      energy: "moderate",
+      icon: "📝",
+    });
+
+    // Breaks
+    if (tasks.filter((t) => t.status === "in-progress").length > 3) {
+      schedule.push({
+        time: "Now",
+        type: "break-needed",
+        recommendation: "Take a 10-minute break to maintain focus",
+        energy: "break",
+        icon: "☕",
+      });
+    }
+
+    return schedule.slice(0, 4); // Limit to 4 items
+  };
+
+  // Detect schedule conflicts
+  const detectScheduleConflicts = (events) => {
+    const conflicts = [];
+    const sortedEvents = [...events].sort(
+      (a, b) => new Date(a.start) - new Date(b.start),
+    );
+
+    for (let i = 1; i < sortedEvents.length; i++) {
+      const prevEnd = new Date(sortedEvents[i - 1].end);
+      const currStart = new Date(sortedEvents[i].start);
+
+      if (currStart < prevEnd) {
+        conflicts.push({
+          event1: sortedEvents[i - 1].title,
+          event2: sortedEvents[i].title,
+          overlap: Math.round((prevEnd - currStart) / (1000 * 60)), // minutes
+        });
+      }
+    }
+
+    return conflicts;
+  };
+
+  // Analyze life patterns from calendar
+  const analyzeLifePatterns = (events) => {
+    if (!events || events.length === 0) return lifePatterns;
+
+    const patterns = { ...lifePatterns };
+    const hourCounts = {};
+
+    events.forEach((event) => {
+      const hour = new Date(event.start).getHours();
+      hourCounts[hour] = (hourCounts[hour] || 0) + 1;
+    });
+
+    // Find peak hours (most events)
+    let maxCount = 0;
+    let peakHour = 10;
+    Object.entries(hourCounts).forEach(([hour, count]) => {
+      if (count > maxCount) {
+        maxCount = count;
+        peakHour = parseInt(hour);
+      }
+    });
+
+    patterns.peakHours = [peakHour, peakHour + 2];
+
+    // Determine creative hours (afternoon, less crowded)
+    patterns.creativeHours = [15, 17];
+    if (hourCounts[15] < 2 && hourCounts[16] < 2) {
+      patterns.creativeHours = [15, 17];
+    }
+
+    return patterns;
   };
 
   useEffect(() => {
@@ -76,34 +257,69 @@ const Home = () => {
       setIsAnalyzing(true);
 
       try {
-        // Simulate AI analysis animation
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-
+        // Fetch all tasks
         const tasksResponse = await api.getTasks();
         const tasks = tasksResponse.data || [];
 
-        // Calculate real metrics
+        // Fetch AI recommendations from backend
+        const aiResponse = await api.getAIRecommendations();
+        const aiData = aiResponse.data || {};
+
+        // Try to fetch calendar data
+        let calendarData = [];
+        let calendarConnected = false;
+        try {
+          const calendarResponse = await api.getCalendarEvents();
+          if (calendarResponse.success) {
+            calendarData = calendarResponse.data || [];
+            calendarConnected = true;
+            setCalendarConnected(true);
+          }
+        } catch (calendarError) {
+          console.log("Calendar not connected, using demo data");
+          // Generate demo calendar events
+          calendarData = generateDemoCalendarEvents();
+        }
+
+        // Calculate metrics from tasks
         const completed = tasks.filter((t) => t.status === "completed").length;
         const inProgress = tasks.filter(
           (t) => t.status === "in-progress",
         ).length;
-        const overdue = tasks.filter((t) => {
-          const dueDate = new Date(t.due_date);
-          const today = new Date();
-          return dueDate < today && t.status !== "completed";
-        }).length;
+        const overdue = tasks.filter(
+          (t) => new Date(t.due_date) < new Date() && t.status !== "completed",
+        ).length;
         const highPriority = tasks.filter((t) => t.priority <= 2).length;
         const totalImpact = tasks.reduce((sum, t) => sum + t.impact, 0);
-        const avgImpact =
-          tasks.length > 0 ? (totalImpact / tasks.length).toFixed(1) : 0;
-        const completionRate =
-          tasks.length > 0 ? Math.round((completed / tasks.length) * 100) : 0;
+        const avgImpact = tasks.length
+          ? (totalImpact / tasks.length).toFixed(1)
+          : 0;
+        const completionRate = tasks.length
+          ? Math.round((completed / tasks.length) * 100)
+          : 0;
 
+        // Analyze life patterns from calendar
+        const patterns = analyzeLifePatterns(calendarData);
+        setLifePatterns(patterns);
+
+        // Detect schedule conflicts
+        const conflicts = detectScheduleConflicts(calendarData);
+        setScheduleConflicts(conflicts);
+
+        // Generate AI schedule
+        const schedule = generateAISchedule(tasks, calendarData);
+        setAiSchedule(schedule);
+
+        // Set calendar events
+        setCalendarEvents(calendarData);
+
+        // Calculate neural score
         const neuralScore = calculateNeuralScore(tasks);
-        const mood = detectUserMood();
-        const voice = generateAIVoice(tasks, neuralScore);
 
-        // Set comprehensive neural data
+        // Detect user mood (with calendar awareness)
+        const mood = detectUserMood();
+
+        // Set state
         setNeuralData({
           totalTasks: tasks.length,
           completed,
@@ -124,35 +340,39 @@ const Home = () => {
 
         setRecentTasks(tasks.slice(0, 5));
         setUserMood(mood);
-        setAiVoice(voice);
 
-        // Generate real AI insights
+        // Use AI recommendations from backend
         setAiInsights({
-          focusAreas: [
-            `Complete ${highPriority} urgent tasks first`,
-            "Allocate 2 hours for deep work this afternoon",
-            "Balance work tasks with 1 personal task",
+          focusAreas: aiData.focusAreas || [
+            `Complete ${highPriority} high-priority tasks`,
+            "Schedule breaks every 90 minutes",
           ],
-          quickWins: tasks
-            .filter((t) => t.complexity <= 2 && t.status === "pending")
-            .slice(0, 3)
-            .map((t) => t.title),
-          neuralPatterns: [
-            "You're 40% more productive on Wednesday mornings",
-            "Complex tasks take 2.3x longer after 3 PM",
-            "You consistently complete health-related tasks early",
+          quickWins:
+            aiData.quickWins ||
+            tasks
+              .filter((t) => t.complexity <= 2 && t.status === "pending")
+              .slice(0, 3)
+              .map((t) => t.title),
+          neuralPatterns: aiData.neuralPatterns || [
+            `You work best ${patterns.peakHours[0]}:00-${patterns.peakHours[1]}:00`,
+            "Creative tasks thrive in afternoon",
           ],
-          optimizationTips: [
-            "Batch similar tasks together",
-            "Use the 2-minute rule for small tasks",
-            "Schedule creative work during your peak hours (2-4 PM)",
+          optimizationTips: aiData.optimizationTips || [
+            "Group similar tasks together",
+            "Schedule meetings back-to-back",
+            "Leave buffer time between events",
           ],
-          predictions: [
-            `You'll complete ${Math.round(completed * 1.3)} tasks this week`,
-            "Productivity will peak on Wednesday",
-            "Consider delegating 2 low-impact tasks",
+          predictions: aiData.predictions || [
+            `You'll complete ${Math.min(completed + 3, tasks.length)} tasks this week`,
+            "Productivity peak: Wednesday morning",
           ],
         });
+
+        // Set AI voice with calendar context
+        setAiVoice(
+          aiData.aiMessage ||
+            generateAIVoice(tasks, neuralScore, calendarData.length),
+        );
 
         setProductivityTrend(
           neuralScore > 70
@@ -162,22 +382,18 @@ const Home = () => {
               : "needs_boost",
         );
       } catch (error) {
-        console.error("Neural analysis failed:", error);
-        // Fallback with intelligent defaults
-        setAiVoice(
-          "I'm here to help optimize your workflow. Let's start by adding your first task.",
-        );
+        console.error("Neural dashboard initialization failed:", error);
+
+        // Fallback if AI backend fails
+        setAiVoice("AI backend unavailable. Using default guidance.");
         setAiInsights({
-          focusAreas: [
-            "Start with one important task",
-            "Break it into smaller steps",
-          ],
+          focusAreas: ["Start with one task at a time"],
           quickWins: ["Review your goals for today"],
           neuralPatterns: [
-            "New users typically see 40% productivity increase in first week",
+            "New users typically see productivity improvement in the first week",
           ],
-          optimizationTips: ["Use the Eisenhower Matrix for prioritization"],
-          predictions: ["You'll establish productive patterns within 3 days"],
+          optimizationTips: ["Use Eisenhower Matrix for prioritization"],
+          predictions: ["You'll complete tasks steadily this week"],
         });
       } finally {
         setIsAnalyzing(false);
@@ -186,6 +402,80 @@ const Home = () => {
 
     initializeNeuralDashboard();
   }, []);
+
+  // Generate demo calendar events for testing
+  const generateDemoCalendarEvents = () => {
+    const today = new Date();
+    const events = [];
+
+    // Morning meeting
+    events.push({
+      id: 1,
+      title: "Team Standup",
+      start: new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+        10,
+        0,
+      ),
+      end: new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+        10,
+        30,
+      ),
+      type: "meeting",
+      color: "#00f3ff",
+    });
+
+    // Work session
+    events.push({
+      id: 2,
+      title: "Project Planning",
+      start: new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+        11,
+        0,
+      ),
+      end: new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+        12,
+        30,
+      ),
+      type: "deep-work",
+      color: "#00ff88",
+    });
+
+    // Lunch
+    events.push({
+      id: 3,
+      title: "Lunch Break",
+      start: new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+        13,
+        0,
+      ),
+      end: new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+        14,
+        0,
+      ),
+      type: "break",
+      color: "#ffaa00",
+    });
+
+    return events;
+  };
 
   const MoodIndicator = ({ mood }) => {
     const moodConfig = {
@@ -212,6 +502,32 @@ const Home = () => {
     );
   };
 
+  const CalendarIntegrationBadge = () => (
+    <div
+      className="calendar-badge"
+      style={{
+        padding: "8px 16px",
+        background: calendarConnected
+          ? "linear-gradient(45deg, rgba(0, 243, 255, 0.1), rgba(0, 255, 136, 0.1))"
+          : "rgba(255, 170, 0, 0.1)",
+        border: calendarConnected
+          ? "1px solid rgba(0, 243, 255, 0.3)"
+          : "1px solid rgba(255, 170, 0, 0.3)",
+        borderRadius: "20px",
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        fontSize: "0.9rem",
+        fontWeight: "600",
+      }}
+    >
+      <span>📅</span>
+      <span>
+        {calendarConnected ? "Calendar Connected" : "Connect Calendar"}
+      </span>
+    </div>
+  );
+
   if (isAnalyzing) {
     return (
       <div className="dashboard-loading">
@@ -236,6 +552,7 @@ const Home = () => {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
           <MoodIndicator mood={userMood} />
+          <CalendarIntegrationBadge />
           <div className="ai-avatar">AI</div>
         </div>
       </div>
@@ -249,7 +566,7 @@ const Home = () => {
               Neural Assistant
             </h3>
             <p style={{ margin: 0, color: "rgba(255,255,255,0.7)" }}>
-              Real-time Cognitive Analysis
+              Real-time Cognitive Analysis • Calendar-Aware
             </p>
           </div>
         </div>
@@ -257,7 +574,16 @@ const Home = () => {
         <div className="ai-actions">
           <button className="ai-action-btn">Ask Neural Question</button>
           <button className="ai-action-btn">Generate Cognitive Report</button>
-          <button className="ai-action-btn">Optimize Schedule</button>
+          <Link to="/calendar">
+            <button
+              className="ai-action-btn"
+              style={{
+                background: "linear-gradient(45deg, #b967ff, #00f3ff)",
+              }}
+            >
+              Optimize Schedule
+            </button>
+          </Link>
         </div>
       </div>
 
@@ -351,11 +677,11 @@ const Home = () => {
         </div>
 
         <div className="kpi-card" style={{ gridColumn: "span 3" }}>
-          <div className="kpi-title">AVG IMPACT</div>
-          <div className="kpi-value">{neuralData.avgImpact}</div>
+          <div className="kpi-title">CALENDAR EVENTS</div>
+          <div className="kpi-value">{calendarEvents.length}</div>
           <div className="kpi-trend">
-            <span className="trend-up">⚡</span>
-            <span>Per task</span>
+            <span className="trend-neutral">•</span>
+            <span>{calculateFreeTime(calendarEvents)}h free</span>
           </div>
         </div>
 
@@ -389,36 +715,28 @@ const Home = () => {
         </div>
 
         <div className="kpi-card" style={{ gridColumn: "span 3" }}>
-          <div className="kpi-title">COGNITIVE LOAD</div>
-          <div className="kpi-value">{neuralData.cognitiveLoad}%</div>
+          <div className="kpi-title">SCHEDULE HEALTH</div>
+          <div className="kpi-value">
+            {scheduleConflicts.length > 0 ? "⚠️" : "✅"}
+          </div>
           <div className="kpi-trend">
             <span
               className={
-                neuralData.cognitiveLoad > 70
-                  ? "trend-down"
-                  : neuralData.cognitiveLoad > 40
-                    ? "trend-neutral"
-                    : "trend-up"
+                scheduleConflicts.length > 0 ? "trend-down" : "trend-up"
               }
             >
-              {neuralData.cognitiveLoad > 70
-                ? "⚠️"
-                : neuralData.cognitiveLoad > 40
-                  ? "•"
-                  : "✅"}
+              {scheduleConflicts.length > 0 ? "⚠️" : "✅"}
             </span>
             <span>
-              {neuralData.cognitiveLoad > 70
-                ? "High load"
-                : neuralData.cognitiveLoad > 40
-                  ? "Moderate"
-                  : "Optimal"}
+              {scheduleConflicts.length > 0
+                ? `${scheduleConflicts.length} conflicts`
+                : "No conflicts"}
             </span>
           </div>
         </div>
 
         {/* Recent Tasks Panel */}
-        <div className="task-list-holographic" style={{ gridColumn: "span 8" }}>
+        <div className="task-list-holographic" style={{ gridColumn: "span 6" }}>
           <div
             style={{
               display: "flex",
@@ -577,8 +895,82 @@ const Home = () => {
           )}
         </div>
 
+        {/* AI Schedule Preview */}
+        <div className="ai-schedule-preview" style={{ gridColumn: "span 6" }}>
+          <div className="calendar-preview-header">
+            <h2 style={{ margin: "0 0 25px 0", fontSize: "1.5rem" }}>
+              📅 Today's Adaptive Schedule
+            </h2>
+            <Link
+              to="/calendar"
+              style={{
+                color: "#00f3ff",
+                textDecoration: "none",
+                fontWeight: "600",
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
+              }}
+            >
+              View Full Calendar →
+            </Link>
+          </div>
+
+          <div className="daily-schedule">
+            {aiSchedule.length > 0 ? (
+              aiSchedule.map((slot, index) => (
+                <div key={index} className="schedule-slot">
+                  <div className="slot-time">{slot.time}</div>
+                  <div className="slot-icon">{slot.icon}</div>
+                  <div className="slot-content">
+                    <div className="slot-title">{slot.type}</div>
+                    <div className="slot-desc">{slot.recommendation}</div>
+                  </div>
+                  <div className={`slot-energy energy-${slot.energy}`}>
+                    {slot.energy === "peak"
+                      ? "⚡"
+                      : slot.energy === "creative"
+                        ? "✨"
+                        : slot.energy === "break"
+                          ? "☕"
+                          : "🔄"}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="empty-schedule">
+                <div style={{ fontSize: "3rem", marginBottom: "15px" }}>📅</div>
+                <h3>No Schedule Yet</h3>
+                <p>Connect your calendar for AI-optimized scheduling</p>
+                <Link to="/calendar">
+                  <button className="btn-neon" style={{ marginTop: "15px" }}>
+                    Connect Calendar
+                  </button>
+                </Link>
+              </div>
+            )}
+          </div>
+
+          <div className="calendar-stats">
+            <div className="calendar-stat">
+              <div className="stat-value">{calendarEvents.length}</div>
+              <div className="stat-label">Events Today</div>
+            </div>
+            <div className="calendar-stat">
+              <div className="stat-value">{scheduleConflicts.length}</div>
+              <div className="stat-label">Conflicts</div>
+            </div>
+            <div className="calendar-stat">
+              <div className="stat-value">
+                {calculateFreeTime(calendarEvents)}h
+              </div>
+              <div className="stat-label">Free Time</div>
+            </div>
+          </div>
+        </div>
+
         {/* AI Insights Panel */}
-        <div className="neural-insights-panel" style={{ gridColumn: "span 4" }}>
+        <div className="neural-insights-panel" style={{ gridColumn: "span 6" }}>
           <h2 style={{ margin: "0 0 25px 0", fontSize: "1.5rem" }}>
             🧠 Neural Insights
           </h2>
@@ -650,6 +1042,87 @@ const Home = () => {
           </div>
         </div>
 
+        {/* Calendar Insights Panel */}
+        <div
+          className="calendar-insights-panel"
+          style={{ gridColumn: "span 6" }}
+        >
+          <h2 style={{ margin: "0 0 25px 0", fontSize: "1.5rem" }}>
+            ⏰ Calendar Intelligence
+          </h2>
+
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "15px" }}
+          >
+            <div className="insight-item">
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <span className="insight-icon">🎯</span>
+                <div className="insight-content">
+                  <div className="insight-title">Peak Productivity</div>
+                  <div className="insight-desc">
+                    Your best focus time is {lifePatterns.peakHours[0]}:00-
+                    {lifePatterns.peakHours[1]}:00
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {scheduleConflicts.length > 0 && (
+              <div className="insight-item">
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <span className="insight-icon">⚠️</span>
+                  <div className="insight-content">
+                    <div className="insight-title">Schedule Conflicts</div>
+                    <div className="insight-desc">
+                      {scheduleConflicts.length} conflict(s) detected
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="insight-item">
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <span className="insight-icon">✨</span>
+                <div className="insight-content">
+                  <div className="insight-title">Creative Hours</div>
+                  <div className="insight-desc">
+                    Schedule creative work at {lifePatterns.creativeHours[0]}
+                    :00-{lifePatterns.creativeHours[1]}:00
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="insight-item">
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <span className="insight-icon">⚡</span>
+                <div className="insight-content">
+                  <div className="insight-title">Energy Management</div>
+                  <div className="insight-desc">
+                    {calculateFreeTime(calendarEvents)} hours free today for
+                    focused work
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ marginTop: "30px", textAlign: "center" }}>
+            <Link to="/calendar">
+              <button
+                className="btn-neon"
+                style={{
+                  width: "100%",
+                  background: "linear-gradient(45deg, #b967ff, #00f3ff)",
+                }}
+              >
+                Optimize My Schedule
+              </button>
+            </Link>
+          </div>
+        </div>
+
         {/* AI Recommendations */}
         <div
           className="recommendations-grid"
@@ -668,8 +1141,9 @@ const Home = () => {
             <div className="recommendation-icon">🎯</div>
             <h3 className="recommendation-title">Focus Optimization</h3>
             <p className="recommendation-desc">
-              Schedule high-priority tasks between 10 AM - 12 PM when your
-              cognitive performance peaks based on historical data.
+              Schedule high-priority tasks between {lifePatterns.peakHours[0]}{" "}
+              AM - {lifePatterns.peakHours[1]} PM when your cognitive
+              performance peaks.
             </p>
           </div>
 
@@ -698,7 +1172,7 @@ const Home = () => {
         }}
       >
         <h2 style={{ margin: "0 0 15px 0", fontSize: "1.8rem" }}>
-          🤝 Human-AI Collaboration
+          🤝 Human-AI Calendar Sync
         </h2>
         <p
           style={{
@@ -707,13 +1181,15 @@ const Home = () => {
             margin: "0 auto 25px auto",
           }}
         >
-          This AI doesn't just give advice—it learns from you, adapts to your
-          rhythms, and becomes a true productivity partner. It understands when
-          you're tired, suggests breaks before burnout, and celebrates your
-          wins.
+          This AI doesn't just give advice—it learns from your calendar, adapts
+          to your rhythms, and becomes a true productivity partner. It
+          understands when you're busy, suggests breaks before burnout, and
+          optimizes your schedule based on real patterns.
         </p>
         <div style={{ display: "flex", gap: "20px", justifyContent: "center" }}>
-          <button className="btn-neon">Start Morning Routine</button>
+          <Link to="/calendar">
+            <button className="btn-neon">Connect Calendar</button>
+          </Link>
           <button
             className="btn-neon"
             style={{ background: "linear-gradient(45deg, #00ff88, #00f3ff)" }}
@@ -723,8 +1199,12 @@ const Home = () => {
           <button
             className="btn-neon"
             style={{ background: "linear-gradient(45deg, #b967ff, #ff00ff)" }}
+            onClick={() => {
+              // Simulate adding tasks to calendar
+              alert("Syncing tasks to calendar...");
+            }}
           >
-            Review Weekly Wins
+            Sync Tasks to Calendar
           </button>
         </div>
       </div>
